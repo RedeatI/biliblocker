@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>视频页 Shadow DOM fixture</title>
+  </head>
+  <body>
+    <h1>新版评论组件测试页</h1>
+    <bili-comments id="comments" data-params="1,123456"></bili-comments>
+    <script>
+      window.__INITIAL_STATE__ = { aid: 123456, videoData: { aid: 123456 } };
+      document.cookie = 'bili_jct=e2e_test_csrf; path=/';
+
+      const comments = document.getElementById('comments');
+      const commentsRoot = comments.attachShadow({ mode: 'open' });
+      const feed = document.createElement('div');
+      feed.id = 'feed';
+      commentsRoot.appendChild(feed);
+
+      function makeThread(uid, rpid, username, text) {
+        const thread = document.createElement('bili-comment-thread-renderer');
+        const threadRoot = thread.attachShadow({ mode: 'open' });
+        const comment = document.createElement('bili-comment-renderer');
+        comment.id = 'comment';
+        const commentRoot = comment.attachShadow({ mode: 'open' });
+        const body = document.createElement('div');
+        body.id = 'body';
+        const avatar = document.createElement('a');
+        avatar.id = 'user-avatar';
+        avatar.href = `//space.bilibili.com/${uid}`;
+        const main = document.createElement('div');
+        main.id = 'main';
+        const header = document.createElement('div');
+        header.id = 'header';
+        const userInfo = document.createElement('bili-comment-user-info');
+        const userRoot = userInfo.attachShadow({ mode: 'open' });
+        userRoot.innerHTML = `<div id="user-name"><a href="//space.bilibili.com/${uid}">${username}</a></div>`;
+        header.appendChild(userInfo);
+        const content = document.createElement('div');
+        content.id = 'content';
+        const rich = document.createElement('bili-rich-text');
+        const richRoot = rich.attachShadow({ mode: 'open' });
+        const paragraph = document.createElement('p');
+        paragraph.id = 'contents';
+        paragraph.dataset.rpid = rpid;
+        paragraph.textContent = text;
+        richRoot.appendChild(paragraph);
+        content.appendChild(rich);
+        const footer = document.createElement('div');
+        footer.id = 'footer';
+        main.append(header, content, footer);
+        body.append(avatar, main);
+        commentRoot.appendChild(body);
+        threadRoot.appendChild(comment);
+        return thread;
+      }
+
+      feed.appendChild(makeThread(71001, 'shadow-1', 'Shadow 用户甲', '普通新版评论'));
+      setTimeout(() => {
+        feed.appendChild(makeThread(71002, 'shadow-2', 'Shadow 用户乙', '加微信shadow123领福利'));
+      }, 150);
+    </script>
+  </body>
+</html>

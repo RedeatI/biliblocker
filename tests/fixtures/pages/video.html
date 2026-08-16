@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>视频页 fixture（脱敏合成 DOM，仅供测试）</title>
+  </head>
+  <body>
+    <div class="video-container">
+      <h1>测试视频标题</h1>
+    </div>
+    <div id="comment-app">
+      <div class="reply-list">
+        <!-- 正常一级评论 -->
+        <div class="list-item" data-rpid="100001">
+          <div class="reply-node">
+            <div class="reply-item">
+              <a class="user-name" href="//space.bilibili.com/10001">正常用户甲</a>
+              <div class="reply-content-container">
+                <div class="reply-content">这个视频讲解得很清楚，学到了。</div>
+              </div>
+              <div class="reply-actions"><span class="reply-time">3小时前</span></div>
+              <!-- 楼中楼回复 -->
+              <div class="sub-reply-container">
+                <div class="sub-reply-item" data-rpid="100002">
+                  <a class="user-name" href="//space.bilibili.com/10002">回复者乙</a>
+                  <div class="reply-content">同意，确实讲得好</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 疑似广告评论（默认规则应折叠） -->
+        <div class="list-item" data-rpid="100003">
+          <div class="reply-node">
+            <div class="reply-item">
+              <a class="user-name" href="//space.bilibili.com/10003">广告机器丙</a>
+              <div class="reply-content-container">
+                <div class="reply-content">加微信abc123领福利，点击 t.cn/xyz</div>
+              </div>
+              <a href="https://t.cn/xyz" style="display: none">隐藏链接</a>
+              <div class="reply-actions"><span class="reply-time">1小时前</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      // 模拟 Bilibili SSR 初始状态（aid 用于评论举报的 oid；必须为合法 JSON）
+      window.__INITIAL_STATE__={"aid":123456,"videoData":{"aid":123456}};
+      // 模拟 bili_jct CSRF 令牌（普通页面 JS 同样可读）
+      document.cookie = 'bili_jct=e2e_test_csrf; path=/';
+    </script>
+  </body>
+</html>

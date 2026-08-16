@@ -1,0 +1,17 @@
+node_modules/
+out/
+dist/
+.wxt/
+coverage/
+playwright-report/
+test-results/
+__pycache__/
+*.py[cod]
+*.log
+*.zip
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.migration/
+.workbuddy/

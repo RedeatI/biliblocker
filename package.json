@@ -1,0 +1,50 @@
+{
+  "name": "biliblocker",
+  "description": "在本地标记、折叠并可恢复地管理 Bilibili 评论与动态中的疑似广告和垃圾内容",
+  "private": true,
+  "version": "0.1.7",
+  "type": "module",
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "postinstall": "wxt prepare",
+    "dev": "wxt -b chrome",
+    "dev:edge": "wxt -b edge",
+    "build": "wxt build",
+    "build:chrome": "wxt build -b chrome",
+    "build:edge": "wxt build -b edge",
+    "icons": "node scripts/generate-icons.mjs",
+    "zip": "node scripts/package.mjs",
+    "release": "node scripts/release.mjs",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "vue": "^3.5.13",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@playwright/test": "^1.50.1",
+    "@types/chrome": "^0.0.280",
+    "@types/node": "^22.10.5",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@wxt-dev/module-vue": "^1.0.1",
+    "eslint": "^9.18.0",
+    "eslint-plugin-vue": "^9.32.0",
+    "happy-dom": "^16.7.2",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.20.0",
+    "vite": "^6.0.7",
+    "vitest": "^3.0.5",
+    "vue-eslint-parser": "^9.4.3",
+    "wxt": "^0.20.3"
+  }
+}

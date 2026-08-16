@@ -1,0 +1,145 @@
+:root {
+  --bb-primary: #4a6cf7;
+  --bb-bg: #ffffff;
+  --bb-border: #e3e6ef;
+  --bb-text: #1f2329;
+  --bb-text-secondary: #57606a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  width: 320px;
+  font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: var(--bb-text);
+  font-size: 13px;
+  background: var(--bb-bg);
+}
+
+.popup {
+  padding: 14px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.header img {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}
+
+.header h1 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--bb-border);
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: #c9cedd;
+  border-radius: 22px;
+  transition: 0.2s;
+}
+
+.slider::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: 3px;
+  top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+
+.switch input:checked + .slider {
+  background: var(--bb-primary);
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(18px);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.stat {
+  border: 1px solid var(--bb-border);
+  border-radius: 8px;
+  padding: 8px 6px;
+  text-align: center;
+}
+
+.stat .num {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--bb-primary);
+}
+
+.stat .label {
+  font-size: 11px;
+  color: var(--bb-text-secondary);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.actions button {
+  flex: 1;
+  border: 1px solid var(--bb-border);
+  background: #fff;
+  border-radius: 7px;
+  padding: 8px 0;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.actions button.primary {
+  background: var(--bb-primary);
+  border-color: var(--bb-primary);
+  color: #fff;
+}
+
+.footer {
+  margin-top: 10px;
+  color: var(--bb-text-secondary);
+  font-size: 11px;
+}

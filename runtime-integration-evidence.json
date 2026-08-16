@@ -1,0 +1,107 @@
+{
+  "schema": "BILIBLOCKER_V0.1.4_RUNTIME_INTEGRATION_EVIDENCE_V1",
+  "candidateVersion": "0.1.4",
+  "allDefectsClosed": true,
+  "findings": {
+    "externalWriteOverlap": false,
+    "authSnapshotDropped": false,
+    "autoProcessDisableNotEnforcedAtDispatch": false,
+    "unblockCapabilityNotEnforcedAtDispatch": false,
+    "resetControlDiverges": false,
+    "clearAllUnseeded": false,
+    "clearQueueLosesUnknownOutcome": false,
+    "pauseNotAwaitable": false
+  },
+  "results": {
+    "coordinatorExternalConcurrencyBypass": {
+      "overlap": false,
+      "globalWriteEntries": 2,
+      "maxActive": 1,
+      "events": [
+        "start:1",
+        "end",
+        "start:2",
+        "end"
+      ]
+    },
+    "commitDropsAuthorizationSnapshot": {
+      "ok": true,
+      "enqueued": 1,
+      "capturedAuthorization": {
+        "epoch": 0,
+        "settingsRevision": 0,
+        "reasonId": null,
+        "capabilityKey": "blockUser",
+        "contentType": "video_comment",
+        "source": "one_click",
+        "autoProcessAuthorized": true,
+        "reportAuthorized": true,
+        "createdAt": 0
+      },
+      "adoptedAuthorization": {
+        "epoch": 0,
+        "settingsRevision": 0,
+        "reasonId": null,
+        "capabilityKey": "blockUser",
+        "contentType": "video_comment",
+        "source": "one_click",
+        "autoProcessAuthorized": true,
+        "reportAuthorized": true,
+        "createdAt": 0
+      }
+    },
+    "dispatchChecks": {
+      "autoBlock": {
+        "ok": false,
+        "reason": "自动处理已关闭"
+      },
+      "unblock": {
+        "ok": false,
+        "reason": "解除拉黑能力未验证"
+      }
+    },
+    "resetControlDivergence": {
+      "memory": 1,
+      "storage": 1,
+      "memoryPaused": true,
+      "storagePaused": true
+    },
+    "clearAllLeavesUnseeded": {
+      "meta": true,
+      "settings": true,
+      "queueControl": true
+    },
+    "clearQueueDropsUnknownEvidence": {
+      "pendingCount": 1,
+      "recordCount": 1,
+      "hasTask": true,
+      "taskStatus": [
+        "unknown_outcome"
+      ]
+    },
+    "pauseReturnsBeforePersistence": {
+      "beforeRelease": {
+        "retType": "object",
+        "started": true,
+        "finished": false
+      },
+      "afterRelease": {
+        "started": true,
+        "finished": true
+      }
+    },
+    "operationIdIdempotent": {
+      "r1Enqueued": 1,
+      "r2Enqueued": 1,
+      "queueLen": 1
+    },
+    "pausedCommitRejectsOfficial": {
+      "enqueued": 0,
+      "ok": true
+    },
+    "bbEnqueueRejected": {
+      "ok": false
+    }
+  },
+  "runAt": "2026-08-15T18:59:22.036Z"
+}

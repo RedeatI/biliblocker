@@ -1,0 +1,214 @@
+{
+  "schema": "BILIBLOCKER_V0.1.6_STAGE_E_INDEPENDENT_EVIDENCE_V1",
+  "candidateVersion": "0.1.6",
+  "probesRun": 35,
+  "allFindingsPass": true,
+  "findings": {
+    "probeA_maxActive1": true,
+    "probeA_serial": true,
+    "probeB_existingNotReverted": true,
+    "probeB_concurrentKept": true,
+    "probeB_createdOnce": true,
+    "probeB_swRestartNoRedispatch": true,
+    "probeC_rejected": true,
+    "probeC_latchSet": true,
+    "probeC_restartFailClosed": true,
+    "probeC_latchFailRejected": true,
+    "probeC_latchFailControlPersisted": true,
+    "probeD_validExecutedOnce": true,
+    "probeD_loginRestoredKeepsPaused": true,
+    "probeD_staleSkippedForRealReason": true,
+    "probeE_zeroPartial": true,
+    "probeE_sameResult": true,
+    "probeE_atomicSet": true,
+    "probeE_replaySame": true,
+    "probeE_reusedRejected": true,
+    "probeF_secondUnaffected": true,
+    "probeF_backendUnaffected": true,
+    "probeG_budgetPersisted": true,
+    "probeH_executorNotCalled": true,
+    "probeH_cancelled": true,
+    "probeH_inFlightToUnknown": true,
+    "probeI_noRevert": true,
+    "probeI_unknownNotQueued": true,
+    "probeJ_resetKeeps": true,
+    "probeJ_clearKeeps": true,
+    "probeK_allFalse": true,
+    "probeK_reasonsFalse": true,
+    "probeK_selectorsFalse": true,
+    "probeK_notE2E": true,
+    "probeL_noEnqueue": true,
+    "probeL_commitActionPresent": true
+  },
+  "results": {
+    "probeA_maxActive": 1,
+    "probeA_events": [
+      "start:bb.blocked",
+      "end:bb.blocked",
+      "start:bb.queue",
+      "end:bb.queue"
+    ],
+    "probeB_queue": [
+      {
+        "id": "blk_mst7etqj_b411d8bc",
+        "status": "queued"
+      },
+      {
+        "id": "existing",
+        "status": "in_flight"
+      },
+      {
+        "id": "concurrent",
+        "status": "queued"
+      }
+    ],
+    "probeB_swRestartStatus": "unknown_outcome",
+    "probeB_swRestartExecuted": 0,
+    "probeC": {
+      "rejected": true,
+      "latchSet": true,
+      "paused2": true,
+      "executed": 0
+    },
+    "probeC_latchFail": {
+      "rejected": true,
+      "persisted": true
+    },
+    "probeD": {
+      "validExec": 1,
+      "stillPaused": true,
+      "staleStatus": "skipped",
+      "staleReason": "恢复前重新验证：授权状态已变化（epoch 不匹配），旧任务不再执行"
+    },
+    "probeE": {
+      "r1": {
+        "ok": false,
+        "code": "storage_failed",
+        "reason": "outcome 写失败"
+      },
+      "r2": {
+        "ok": false,
+        "code": "storage_failed",
+        "reason": "outcome 写失败"
+      },
+      "blocked": 0,
+      "queue": 0
+    },
+    "probeE2": {
+      "r1": {
+        "ok": true,
+        "code": "committed",
+        "enqueued": 1,
+        "localBlockedAdded": true,
+        "localVerifiedAdded": false,
+        "skipped": []
+      },
+      "r2": {
+        "ok": true,
+        "code": "committed",
+        "enqueued": 1,
+        "localBlockedAdded": true,
+        "localVerifiedAdded": false,
+        "skipped": []
+      },
+      "r3": {
+        "ok": false,
+        "code": "operationId_reused",
+        "reason": "operationId 已被不同请求复用，已拒绝"
+      },
+      "atomic": true,
+      "setKeys": [
+        [
+          "bb.queueControl"
+        ],
+        [
+          "bb.blocked",
+          "bb.operationOutcomes",
+          "bb.queue"
+        ],
+        [
+          "bb.queueControl"
+        ]
+      ]
+    },
+    "probeF": {
+      "second": [
+        1
+      ],
+      "raw": [
+        1
+      ]
+    },
+    "probeG": {
+      "executed": 1,
+      "budgetAfterRestart": 15
+    },
+    "probeH": {
+      "executed": 0,
+      "status": "cancelled"
+    },
+    "probeH2": {
+      "status": "unknown_outcome"
+    },
+    "probeI": [
+      {
+        "id": "s-inflight",
+        "status": "unknown_outcome"
+      },
+      {
+        "id": "s-succeeded",
+        "status": "succeeded"
+      },
+      {
+        "id": "s-failed",
+        "status": "failed"
+      },
+      {
+        "id": "s-cancelled",
+        "status": "cancelled"
+      },
+      {
+        "id": "s-unknown",
+        "status": "unknown_outcome"
+      }
+    ],
+    "probeJ": {
+      "afterReset": [
+        "u1"
+      ],
+      "afterClear": [
+        "u1",
+        "u2"
+      ]
+    },
+    "probeK": {
+      "caps": {
+        "blockUser": false,
+        "unblockUser": false,
+        "reportVideoComment": false,
+        "reportVideoReply": false,
+        "reportDynamicComment": false,
+        "reportDynamic": false,
+        "selectorsVideo": false,
+        "selectorsDynamic": false
+      },
+      "reasons": false,
+      "selectors": false,
+      "blockEnabled": false
+    },
+    "probeL_types": [
+      "BB_PING",
+      "BB_LOGIN",
+      "BB_CANCEL_TASKS",
+      "BB_EXECUTE_RESULT",
+      "BB_QUEUE_STATUS_REQ",
+      "BB_LOGIN_RESTORED",
+      "BB_OPEN_OPTIONS",
+      "BB_MUTATE_LIST",
+      "BB_COMMIT_ACTION",
+      "BB_QUEUE_RESUME",
+      "BB_CANCEL_ALL_PENDING"
+    ]
+  },
+  "runAt": "2026-08-14T17:11:24.312Z"
+}

@@ -1,0 +1,129 @@
+{
+  "findings": {
+    "externalWriteOverlap": true,
+    "authSnapshotDropped": true,
+    "autoProcessDisableNotEnforcedAtDispatch": true,
+    "unblockCapabilityNotEnforcedAtDispatch": true,
+    "resetControlDiverges": true,
+    "clearAllUnseeded": true,
+    "clearQueueLosesUnknownOutcome": true,
+    "pauseNotAwaitable": true
+  },
+  "results": {
+    "coordinatorExternalConcurrencyBypass": {
+      "overlap": true,
+      "globalWriteEntries": 1,
+      "events": [
+        "start:1",
+        "start:2",
+        "end:2",
+        "end:1"
+      ]
+    },
+    "commitDropsAuthorizationSnapshot": {
+      "ok": true,
+      "enqueued": 1,
+      "capturedAuthorization": null,
+      "adoptedAuthorization": null
+    },
+    "dispatchChecks": {
+      "autoBlock": {
+        "ok": true
+      },
+      "unblock": {
+        "ok": true
+      }
+    },
+    "resetControlDivergence": {
+      "memory": {
+        "paused": true,
+        "pauseReason": "已恢复默认设置，现存队列已撤销",
+        "pauseKind": "authorization_revoked",
+        "pausedAt": 1786628551246,
+        "requiresExplicitResume": true,
+        "authorizationEpoch": 1,
+        "recentAttempts": {
+          "block": [],
+          "report": [],
+          "unblock": []
+        }
+      },
+      "storage": {
+        "paused": false,
+        "pauseReason": null,
+        "pauseKind": "none",
+        "pausedAt": null,
+        "requiresExplicitResume": false,
+        "authorizationEpoch": 0,
+        "recentAttempts": {
+          "block": [],
+          "report": [],
+          "unblock": []
+        }
+      },
+      "raw": {
+        "bb.queueControl": {
+          "paused": false,
+          "pauseReason": null,
+          "pauseKind": "none",
+          "pausedAt": null,
+          "requiresExplicitResume": false,
+          "authorizationEpoch": 0,
+          "recentAttempts": {
+            "block": [],
+            "report": [],
+            "unblock": []
+          }
+        },
+        "bb.meta": {
+          "schemaVersion": 1,
+          "seededAt": 0,
+          "lastMigratedAt": 1786628551244
+        },
+        "bb.settings": {
+          "enabled": true,
+          "videoCommentsEnabled": true,
+          "dynamicsEnabled": true,
+          "suspiciousHandling": "collapse",
+          "quickActionDisplay": "hover",
+          "autoReportAuthorized": false,
+          "defaultReportReason": null,
+          "autoProcessVerified": false,
+          "operationDelayMs": 3000
+        }
+      }
+    },
+    "clearAllLeavesUnseeded": {
+      "memory": {
+        "paused": true,
+        "pauseReason": "已清空全部数据，现存队列已撤销",
+        "pauseKind": "authorization_revoked",
+        "pausedAt": 1786628551247,
+        "requiresExplicitResume": true,
+        "authorizationEpoch": 1,
+        "recentAttempts": {
+          "block": [],
+          "report": [],
+          "unblock": []
+        }
+      },
+      "raw": {}
+    },
+    "clearQueueDropsUnknownEvidence": {
+      "pending": [],
+      "lastSaved": [],
+      "done": []
+    },
+    "pauseReturnsBeforePersistence": {
+      "beforeRelease": {
+        "retType": "undefined",
+        "started": true,
+        "finished": false
+      },
+      "afterRelease": {
+        "started": true,
+        "finished": true
+      }
+    }
+  }
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>动态详情页 fixture（/dynamic/{id}；脱敏合成 DOM，仅供测试）</title>
+  </head>
+  <body>
+    <!-- 主卡片（动态本体） -->
+    <div class="bili-dyn-item" data-dyn-id="300001">
+      <div class="bili-dyn-card">
+        <div class="bili-dyn-card__header">
+          <a class="bili-dyn-card__user-name" href="//space.bilibili.com/30001">详情UP主</a>
+        </div>
+        <div class="bili-dyn-card__content">
+          <div class="bili-dyn-content__text">这条动态介绍我的新项目，欢迎大家交流。</div>
+        </div>
+        <div class="bili-dyn-card__action"></div>
+      </div>
+    </div>
+
+    <!-- 动态评论区：一级评论 + 楼中楼回复 -->
+    <div class="bili-comment">
+      <div class="comment-area">
+        <div class="reply-list">
+          <div class="list-item" data-rpid="300101">
+            <div class="reply-node">
+              <div class="reply-item">
+                <a class="user-name" href="//space.bilibili.com/30002">评论用户A</a>
+                <div class="reply-content-container">
+                  <div class="reply-content">支持一下，看起来不错。</div>
+                </div>
+                <div class="reply-actions"><span class="reply-time">2小时前</span></div>
+                <!-- 楼中楼 -->
+                <div class="sub-reply-container">
+                  <div class="sub-reply-item" data-rpid="300102">
+                    <a class="user-name" href="//space.bilibili.com/30003">回复用户B</a>
+                    <div class="reply-content">同感，细节很到位</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 疑似广告评论（默认规则应折叠） -->
+          <div class="list-item" data-rpid="300103">
+            <div class="reply-node">
+              <div class="reply-item">
+                <a class="user-name" href="//space.bilibili.com/30004">评论机器人</a>
+                <div class="reply-content-container">
+                  <div class="reply-content">加微信abc123领福利，点击 t.cn/xyz</div>
+                </div>
+                <div class="reply-actions"><span class="reply-time">1小时前</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.cookie = 'bili_jct=e2e_test_csrf; path=/';
+    </script>
+  </body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>动态首页 fixture（脱敏合成 DOM，仅供测试）</title>
+  </head>
+  <body>
+    <div id="dyn-feed">
+      <!-- 正常动态 -->
+      <div class="bili-dyn-item" data-dyn-id="900001">
+        <div class="bili-dyn-card">
+          <div class="bili-dyn-card__header">
+            <a class="bili-dyn-card__user-name" href="//space.bilibili.com/20001">正常UP主</a>
+          </div>
+          <div class="bili-dyn-card__content">
+            <div class="bili-dyn-content__text">今天发布了新视频，感谢支持！</div>
+          </div>
+          <div class="bili-dyn-card__action"></div>
+        </div>
+      </div>
+      <!-- 疑似广告动态（默认规则应折叠） -->
+      <div class="bili-dyn-item" data-dyn-id="900002">
+        <div class="bili-dyn-card">
+          <div class="bili-dyn-card__header">
+            <a class="bili-dyn-card__user-name" href="//space.bilibili.com/20002">营销号丁</a>
+          </div>
+          <div class="bili-dyn-card__content">
+            <div class="bili-dyn-content__text">低价代练，加QQ群888888，点击 s2.bz/abc</div>
+            <a href="https://s2.bz/abc" style="display: none">链接</a>
+          </div>
+          <div class="bili-dyn-card__action"></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.cookie = 'bili_jct=e2e_test_csrf; path=/';
+    </script>
+  </body>
+</html>

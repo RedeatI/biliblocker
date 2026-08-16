@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Opus 详情页 fixture（/opus/{id}；脱敏合成 DOM，仅供测试）</title>
+  </head>
+  <body>
+    <!-- Opus 主卡片 -->
+    <div class="opus-item" data-dyn-id="400001">
+      <div class="opus-card">
+        <div class="opus-card__header">
+          <a class="opus-card__user-name" href="//space.bilibili.com/40001">专栏作者</a>
+        </div>
+        <div class="opus-card__content">
+          <div class="opus-card__text">这是一篇专栏文章，内容是关于摄影技巧的分享。</div>
+        </div>
+        <div class="opus-card__action"></div>
+      </div>
+    </div>
+
+    <!-- Opus 评论区：一级评论 + 楼中楼 -->
+    <div class="opus-comment">
+      <div class="reply-list-wrap">
+        <div class="reply-list">
+          <div class="list-item" data-rpid="400101">
+            <div class="reply-node">
+              <div class="reply-item">
+                <a class="user-name" href="//space.bilibili.com/40002">读者C</a>
+                <div class="reply-content-container">
+                  <div class="reply-content">学到了，讲得真清楚。</div>
+                </div>
+                <div class="reply-actions"><span class="reply-time">5小时前</span></div>
+                <div class="sub-reply-container">
+                  <div class="sub-reply-item" data-rpid="400102">
+                    <a class="user-name" href="//space.bilibili.com/40003">读者D</a>
+                    <div class="reply-content">补充一点：光圈优先模式更好用</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.cookie = 'bili_jct=e2e_test_csrf; path=/';
+    </script>
+  </body>
+</html>
