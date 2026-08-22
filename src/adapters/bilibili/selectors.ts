@@ -115,12 +115,15 @@ export const DETAIL_COMMENT_CONTAINER = [
   '.reply-list-wrap',
 ] as const;
 
-/** 页面类型判定（前缀匹配，兼容 /video/BVxxx 与测试 fixture 路径） */
+/**
+ * 页面类型判定。
+ * 动态详情必须带数值 ID；`/dynamic` 与 `/dynamic/` 属于动态首页，不能按详情页处理。
+ */
 export function detectPageScope(
   pathname: string,
 ): 'video_page' | 'dynamic_feed' | 'dynamic_detail' {
-  if (/^\/video/.test(pathname) || /^\/list\//.test(pathname)) return 'video_page';
-  if (/^\/dynamic(\/|\.|$)/.test(pathname) || /^\/opus\//.test(pathname)) {
+  if (/^\/video(?:\/|$)/.test(pathname) || /^\/list(?:\/|$)/.test(pathname)) return 'video_page';
+  if (/^\/(?:dynamic|opus)\/\d+(?:\/|$)/.test(pathname)) {
     return 'dynamic_detail';
   }
   return 'dynamic_feed';

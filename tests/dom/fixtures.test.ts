@@ -27,6 +27,10 @@ describe('A-04 路由：/dynamic/{id} 与 /opus/{id}', () => {
     expect(detectPageScope('/opus/67890')).toBe('dynamic_detail');
     expect(detectPageScope('/video/BV1xx411c7mD')).toBe('video_page');
     expect(detectPageScope('/')).toBe('dynamic_feed');
+    expect(detectPageScope('/dynamic')).toBe('dynamic_feed');
+    expect(detectPageScope('/dynamic/')).toBe('dynamic_feed');
+    expect(detectPageScope('/opus')).toBe('dynamic_feed');
+    expect(detectPageScope('/opus/')).toBe('dynamic_feed');
   });
 
   it('extractDynamicId 提取两种路由的动态 ID', () => {
