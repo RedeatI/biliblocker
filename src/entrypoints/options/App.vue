@@ -31,6 +31,10 @@ const tabs: { key: TabKey; label: string }[] = [
 
 const active = ref<TabKey>('overview');
 
+function retryInit(): void {
+  void initStore();
+}
+
 onMounted(() => {
   const hash = location.hash.replace(/^#\/?/, '') as TabKey;
   if (tabs.some((t) => t.key === hash)) active.value = hash;
@@ -59,7 +63,13 @@ onMounted(() => {
   </nav>
 
   <div v-if="!state.ready" class="card">
-    <div class="empty">正在加载设置…</div>
+    <div v-if="state.loadError" class="empty" role="alert">
+      <p class="error-text">{{ state.loadError }}</p>
+      <button class="btn" type="button" :disabled="state.loading" @click="retryInit">
+        {{ state.loading ? '正在重试…' : '重试读取' }}
+      </button>
+    </div>
+    <div v-else class="empty" role="status" aria-live="polite">正在加载设置…</div>
   </div>
 
   <template v-else>

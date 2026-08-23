@@ -25,6 +25,8 @@ export const repo = new StorageRepository(chromeStorageBackend(), { allowWrites:
 
 export interface AppState {
   ready: boolean;
+  loading: boolean;
+  loadError: string | null;
   settings: Settings;
   rules: Rule[];
   blocked: BlockedUser[];
@@ -35,6 +37,8 @@ export interface AppState {
 
 export const state = reactive<AppState>({
   ready: false,
+  loading: false,
+  loadError: null,
   settings: { ...DEFAULT_SETTINGS },
   rules: [],
   blocked: [],
@@ -43,19 +47,42 @@ export const state = reactive<AppState>({
   audit: [],
 });
 
-let initialized = false;
+let initPromise: Promise<void> | null = null;
+let storageListenerRegistered = false;
 
 export async function initStore(): Promise<void> {
-  if (initialized) return;
-  initialized = true;
-  await repo.init();
-  await refreshAll();
-  // 跨页面实时同步（设置页/弹窗/内容脚本共享同一 storage；P1-1 遍历全部变化键）
-  browser.storage.onChanged.addListener((changes) => {
-    repo.applyExternalChanges(changes as Record<string, { newValue?: unknown }>);
-    void refreshAll();
-  });
-  state.ready = true;
+  if (state.ready) return;
+  if (initPromise) return initPromise;
+
+  state.loading = true;
+  state.loadError = null;
+  initPromise = (async () => {
+    try {
+      await repo.init();
+      await refreshAll();
+      if (!storageListenerRegistered) {
+        // 跨页面实时同步（设置页/弹窗/内容脚本共享同一 storage；P1-1 遍历全部变化键）
+        browser.storage.onChanged.addListener((changes) => {
+          repo.applyExternalChanges(changes as Record<string, { newValue?: unknown }>);
+          void refreshAll();
+        });
+        storageListenerRegistered = true;
+      }
+      state.ready = true;
+    } catch {
+      // Fail closed: defaults are placeholders, not verified persisted state.
+      state.ready = false;
+      state.loadError = '设置状态未知：读取本地数据失败，请重试。';
+    } finally {
+      state.loading = false;
+    }
+  })();
+
+  try {
+    await initPromise;
+  } finally {
+    initPromise = null;
+  }
 }
 
 export async function refreshAll(): Promise<void> {
