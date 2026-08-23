@@ -45,6 +45,7 @@
       </div>
     </div>
     <script>
+      history.replaceState(null, '', '/video/r16-legacy-fixture');
       // 模拟 Bilibili SSR 初始状态（aid 用于评论举报的 oid；必须为合法 JSON）
       window.__INITIAL_STATE__={"aid":123456,"videoData":{"aid":123456}};
       // 模拟 bili_jct CSRF 令牌（普通页面 JS 同样可读）

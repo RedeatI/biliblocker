@@ -7,7 +7,13 @@
  */
 // @vitest-environment happy-dom
 import { describe, expect, it } from 'vitest';
-import { extractComment, extractDynamic, findCommentActionAnchor } from '@/adapters/bilibili';
+import {
+  extractComment,
+  extractDynamic,
+  findCommentActionAnchor,
+  rootCommentIdOf,
+} from '@/adapters/bilibili';
+import { composedTextContent } from '@/shared/composed-dom';
 import { buildContext } from '@/adapters/context';
 import { RuleEngine } from '@/rules/engine';
 import { DEFAULT_RULES } from '@/rules/default-rules';
@@ -88,6 +94,9 @@ describe('视频一级评论提取', () => {
     const threadShadow = thread.attachShadow({ mode: 'open' });
     const comment = document.createElement('bili-comment-renderer') as HTMLElement;
     comment.id = 'comment';
+    Object.assign(comment, {
+      data: { rpid: 2576184175, content: { message: '新版 Shadow DOM 评论正文' } },
+    });
     const commentShadow = comment.attachShadow({ mode: 'open' });
 
     const body = document.createElement('div');
@@ -121,12 +130,50 @@ describe('视频一级评论提取', () => {
       pageScope: 'video_page',
       videoId: '117093424956637',
     });
-    expect(result.ok).toBe(false);
-    expect(result.missing).toBe('contentId');
+    expect(result.ok).toBe(true);
+    expect(result.missing).toBeUndefined();
     expect(result.data?.uid).toBe(24680);
     expect(result.data?.username).toBe('新版用户');
     expect(result.data?.text).toBe('新版 Shadow DOM 评论正文');
+    expect(result.data?.contentId).toBe('2576184175');
+    expect(result.data?.rootContentId).toBe('2576184175');
+    expect(rootCommentIdOf(thread)).toBe('2576184175');
     expect(findCommentActionAnchor(thread)).toBe(footer);
+  });
+
+  it('按渲染顺序读取 slot 与嵌套 open Shadow DOM，排除样式和未分配 light DOM', () => {
+    const host = document.createElement('div');
+    const shadow = host.attachShadow({ mode: 'open' });
+    shadow.innerHTML = '<style>不可见样式</style>前<slot></slot>后';
+    const nested = document.createElement('span');
+    nested.slot = '';
+    nested.attachShadow({ mode: 'open' }).textContent = '嵌套正文';
+    const unassigned = document.createElement('span');
+    unassigned.slot = 'other';
+    unassigned.textContent = '未分配正文';
+    host.append(nested, unassigned);
+    const slot = shadow.querySelector('slot') as HTMLSlotElement;
+    Object.defineProperty(slot, 'assignedNodes', {
+      configurable: true,
+      value: ({ flatten }: AssignedNodesOptions = {}) => (flatten ? [nested] : [nested]),
+    });
+
+    expect(composedTextContent(host)).toBe('前嵌套正文后');
+  });
+
+  it('组件正文尚未渲染时使用已观测的只读 content.message 回退', () => {
+    const comment = document.createElement('bili-comment-renderer') as HTMLElement;
+    Object.assign(comment, {
+      data: { rpid: 'property-1', content: { message: '属性回退正文' } },
+    });
+    comment.innerHTML = '<a href="//space.bilibili.com/9"></a><bili-rich-text></bili-rich-text>';
+    const r = extractComment(comment, {
+      contentType: 'video_comment',
+      pageScope: 'video_page',
+    });
+    expect(r.ok).toBe(true);
+    expect(r.data?.text).toBe('属性回退正文');
+    expect(r.data?.contentId).toBe('property-1');
   });
 });
 
@@ -162,6 +209,41 @@ describe('楼中楼回复提取', () => {
     expect(r.data?.contentId).toBe('101');
     expect(r.data?.rootContentId).toBe('100');
     expect(r.data?.contentType).toBe('video_reply');
+  });
+
+  it('从回复组件的只读 data.rpid 取本条 ID，不误取所属根评论', () => {
+    const thread = document.createElement('bili-comment-thread-renderer') as HTMLElement;
+    Object.assign(thread, { data: { rpid: 'root-1' } });
+    const shadow = thread.attachShadow({ mode: 'open' });
+    const reply = document.createElement('bili-comment-reply-renderer') as HTMLElement;
+    Object.assign(reply, { data: { rpid: 'reply-2', content: { message: '回复正文' } } });
+    reply.innerHTML = '<a href="//space.bilibili.com/2"></a><bili-rich-text></bili-rich-text>';
+    shadow.appendChild(reply);
+
+    const r = extractComment(reply, {
+      contentType: 'video_reply',
+      pageScope: 'video_page',
+      rootCommentId: 'root-1',
+    });
+    expect(r.ok).toBe(true);
+    expect(r.data?.contentId).toBe('reply-2');
+    expect(r.data?.rootContentId).toBe('root-1');
+  });
+
+  it('旧版包装层无 ID 时继续查找有界后代 carrier', () => {
+    const node = parse(`
+      <div class="list-item">
+        <div class="reply-item">
+          <a href="//space.bilibili.com/7"></a>
+          <div class="reply-content" data-rpid="descendant-7">正文</div>
+        </div>
+      </div>
+    `);
+    const r = extractComment(node, {
+      contentType: 'video_comment',
+      pageScope: 'video_page',
+    });
+    expect(r.data?.contentId).toBe('descendant-7');
   });
 });
 

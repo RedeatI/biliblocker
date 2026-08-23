@@ -8,6 +8,7 @@
     <h1>新版评论组件测试页</h1>
     <bili-comments id="comments" data-params="1,123456"></bili-comments>
     <script>
+      history.replaceState(null, '', '/video/r10-shadow-fixture');
       window.__INITIAL_STATE__ = { aid: 123456, videoData: { aid: 123456 } };
       document.cookie = 'bili_jct=e2e_test_csrf; path=/';
 
@@ -22,6 +23,7 @@
         const threadRoot = thread.attachShadow({ mode: 'open' });
         const comment = document.createElement('bili-comment-renderer');
         comment.id = 'comment';
+        comment.data = { rpid, content: { message: text } };
         const commentRoot = comment.attachShadow({ mode: 'open' });
         const body = document.createElement('div');
         body.id = 'body';
@@ -42,7 +44,6 @@
         const richRoot = rich.attachShadow({ mode: 'open' });
         const paragraph = document.createElement('p');
         paragraph.id = 'contents';
-        paragraph.dataset.rpid = rpid;
         paragraph.textContent = text;
         richRoot.appendChild(paragraph);
         content.appendChild(rich);

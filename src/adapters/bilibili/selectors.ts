@@ -59,6 +59,8 @@ export const COMMENT_SELECTORS = {
   ] as const,
   /** 内容 ID 候选属性（取第一个非空） */
   idAttrs: ['data-rpid', 'data-id', 'data-rpid-id'] as const,
+  /** 2026 评论组件暴露的只读数据对象（实页结构捕获确认包含 rpid/content.message） */
+  dataProperties: ['data', '__data'] as const,
   /** 回复/操作按钮区（快捷按钮挂载位置候选） */
   actionArea: [
     '#footer',

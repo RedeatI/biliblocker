@@ -68,6 +68,24 @@ test.describe('BiliBlocker E2E', () => {
 
       await expect(page.locator('[data-bb-host]')).toHaveCount(2);
       await expect(page.locator('bili-comment-thread-renderer[data-bb-processed]')).toHaveCount(2);
+      await expect
+        .poll(async () =>
+          page.locator('bili-comment-thread-renderer').evaluateAll((threads) =>
+            threads.map((thread) => {
+              const walk = (root: Document | ShadowRoot | Element): number => {
+                let count = root instanceof Element && root.matches('[data-bb-host]') ? 1 : 0;
+                if (root instanceof Element && root.shadowRoot) count += walk(root.shadowRoot);
+                for (const element of root.querySelectorAll('*')) {
+                  if (element.matches('[data-bb-host]')) count += 1;
+                  if (element.shadowRoot) count += walk(element.shadowRoot);
+                }
+                return count;
+              };
+              return walk(thread);
+            }),
+          ),
+        )
+        .toEqual([1, 1]);
       await expect(page.locator('[data-bb-placeholder]')).toHaveCount(1);
       await expect(page.locator('[data-bb-placeholder]')).toContainText('疑似');
     } finally {

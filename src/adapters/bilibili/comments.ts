@@ -6,6 +6,7 @@ import type { ContentType, ExtractedContent, PageScope } from '../../shared/type
 import { parseUidFromHref } from '../../shared/utils';
 import {
   closestComposed,
+  composedTextContent,
   firstSelectorDeep,
   querySelectorAllDeep,
 } from '../../shared/composed-dom';
@@ -31,14 +32,55 @@ function firstAttr(el: Element | null | undefined, attrs: readonly string[]): st
   return null;
 }
 
-/** 内容 ID 提取：自身 → 旧版包装层 → 当前评论组件后代中的 ID carrier。 */
-function firstContentId(node: HTMLElement, attrs: readonly string[]): string | null {
-  const direct = firstAttr(node, attrs);
-  if (direct) return direct;
-  const wrapper = closestComposed<HTMLElement>(node, '.list-item');
-  if (wrapper && wrapper !== node) return firstAttr(wrapper, attrs);
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return typeof value === 'object' && value !== null ? (value as Record<string, unknown>) : null;
+}
+
+function nonEmptyScalar(value: unknown): string | null {
+  if (typeof value === 'string') return value.trim() || null;
+  if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  return null;
+}
+
+function componentData(node: Element): Record<string, unknown> | null {
+  const carrier = node as Element & Record<string, unknown>;
+  for (const property of COMMENT_SELECTORS.dataProperties) {
+    const data = asRecord(carrier[property]);
+    if (data) return data;
+  }
+  return null;
+}
+
+function componentContentId(node: Element): string | null {
+  const data = componentData(node);
+  if (!data) return null;
+  return nonEmptyScalar(data.rpid) ?? nonEmptyScalar(data.rpid_str);
+}
+
+function componentMessage(node: Element): string {
+  const content = asRecord(componentData(node)?.content);
+  return nonEmptyScalar(content?.message) ?? '';
+}
+
+/** 内容 ID 提取：选中条目 → 实际评论组件 → 旧版包装层 → 有界属性 carrier。 */
+function firstContentId(
+  itemNode: HTMLElement,
+  contentRoot: HTMLElement,
+  attrs: readonly string[],
+): string | null {
+  for (const candidate of [itemNode, contentRoot]) {
+    const direct = firstAttr(candidate, attrs) ?? componentContentId(candidate);
+    if (direct) return direct;
+  }
+
+  const wrapper = closestComposed<HTMLElement>(itemNode, '.list-item');
+  if (wrapper && wrapper !== itemNode) {
+    const wrapperId = firstAttr(wrapper, attrs);
+    if (wrapperId) return wrapperId;
+  }
+
   for (const attr of attrs) {
-    const carrier = firstSelectorDeep<HTMLElement>(node, [`[${attr}]`]);
+    const carrier = firstSelectorDeep<HTMLElement>(contentRoot, [`[${attr}]`]);
     const value = firstAttr(carrier, [attr]);
     if (value) return value;
   }
@@ -74,20 +116,21 @@ function findUid(root: Element): number | null {
 function findUsername(root: Element): string | null {
   const textEl = firstSelector(root, COMMENT_SELECTORS.userNameText);
   if (textEl) {
-    const t = textEl.textContent?.trim();
+    const t = composedTextContent(textEl).trim();
     if (t) return t;
   }
   const link = firstSelector<HTMLAnchorElement>(root, COMMENT_SELECTORS.userNameLink);
-  const t = link?.textContent?.trim();
+  const t = link ? composedTextContent(link).trim() : '';
   return t || null;
 }
 
 function findText(root: Element): string {
   const contentEl = firstSelector(root, COMMENT_SELECTORS.content);
   if (contentEl) {
-    return (contentEl.textContent ?? '').replace(/\s+/g, ' ').trim();
+    const rendered = composedTextContent(contentEl).replace(/\s+/g, ' ').trim();
+    if (rendered) return rendered;
   }
-  return '';
+  return componentMessage(root).replace(/\s+/g, ' ').trim();
 }
 
 /**
@@ -112,7 +155,7 @@ export function extractComment(
   const username = findUsername(contentRoot);
   const text = findText(contentRoot);
   const links = collectLinks(contentRoot);
-  const contentId = firstContentId(contentRoot, COMMENT_SELECTORS.idAttrs);
+  const contentId = firstContentId(node, contentRoot, COMMENT_SELECTORS.idAttrs);
 
   const missing: ('uid' | 'contentId')[] = [];
   if (uid === null) missing.push('uid');
@@ -186,7 +229,7 @@ export function findSubReplies(container: HTMLElement): HTMLElement[] {
 /** 一级评论条目的根评论 ID（取自身 id 属性） */
 export function rootCommentIdOf(node: HTMLElement): string | null {
   const contentRoot = firstSelector<HTMLElement>(node, COMMENT_SELECTORS.componentContent) ?? node;
-  return firstContentId(contentRoot, COMMENT_SELECTORS.idAttrs);
+  return firstContentId(node, contentRoot, COMMENT_SELECTORS.idAttrs);
 }
 
 /** 由楼中楼条目向上找所属根评论条目 */

@@ -9,6 +9,44 @@
 
 export type ComposedQueryRoot = Document | DocumentFragment | Element;
 
+const NON_RENDERED_TEXT_ELEMENTS = new Set(['SCRIPT', 'STYLE', 'TEMPLATE', 'NOSCRIPT']);
+
+/**
+ * Read rendered text through open shadow roots and slots without executing page code.
+ * Closed roots remain intentionally opaque.
+ */
+export function composedTextContent(root: Node): string {
+  const parts: string[] = [];
+
+  const walk = (node: Node): void => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      parts.push(node.textContent ?? '');
+      return;
+    }
+
+    if (node instanceof Element) {
+      if (NON_RENDERED_TEXT_ELEMENTS.has(node.tagName)) return;
+
+      if (node instanceof HTMLSlotElement) {
+        const assigned = node.assignedNodes({ flatten: true });
+        const children = assigned.length > 0 ? assigned : [...node.childNodes];
+        for (const child of children) walk(child);
+        return;
+      }
+
+      if (node.shadowRoot) {
+        walk(node.shadowRoot);
+        return;
+      }
+    }
+
+    for (const child of node.childNodes) walk(child);
+  };
+
+  walk(root);
+  return parts.join('');
+}
+
 function childElements(root: ComposedQueryRoot): Element[] {
   if (root instanceof Element) return [root, ...root.querySelectorAll('*')];
   return [...root.querySelectorAll('*')];
